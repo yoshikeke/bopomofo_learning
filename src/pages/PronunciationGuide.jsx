@@ -282,19 +282,21 @@ export default function PronunciationGuide() {
               <strong>声調記号はボポモフォの右側</strong>に付きます（第一声は省略）。<br />
               行をクリックすると発音が聞けます。
             </p>
-            <table className="guide-table">
-              <thead>
-                <tr>
-                  <th>記号</th>
-                  <th>名前</th>
-                  <th>例</th>
-                  <th>口の動かし方・コツ</th>
-                </tr>
-              </thead>
-              <tbody>
-                {TONES.map(t => <ToneRow key={t.num} tone={t} />)}
-              </tbody>
-            </table>
+            <div className="guide-table-scroll">
+              <table className="guide-table">
+                <thead>
+                  <tr>
+                    <th>記号</th>
+                    <th>名前</th>
+                    <th>例</th>
+                    <th>口の動かし方・コツ</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {TONES.map(t => <ToneRow key={t.num} tone={t} />)}
+                </tbody>
+              </table>
+            </div>
             <div className="tone-diagram">
               <p className="guide-intro" style={{ marginBottom: 8 }}>音の高低イメージ（5段階）：</p>
               <pre className="tone-chart">{`高 ⑤  ─────                      ─
@@ -312,14 +314,16 @@ export default function PronunciationGuide() {
               子音（声母）21種。ボポモフォ記号をクリックすると発音が聞けます。<br />
               <strong>無気音</strong>（息を出さない）と<strong>有気音</strong>（息を強く出す）の区別に注意。
             </p>
-            <table className="guide-table">
-              <thead>
-                <tr><th>記号</th><th>ピンイン</th><th>例</th><th>口の動かし方・コツ</th></tr>
-              </thead>
-              <tbody>
-                {INITIALS.map(item => <Row key={item.symbol} item={item} speakText={item.example.split(' ')[1]} />)}
-              </tbody>
-            </table>
+            <div className="guide-table-scroll">
+              <table className="guide-table">
+                <thead>
+                  <tr><th>記号</th><th>ピンイン</th><th>例</th><th>口の動かし方・コツ</th></tr>
+                </thead>
+                <tbody>
+                  {INITIALS.map(item => <Row key={item.symbol} item={item} speakText={item.example.split(' ')[1]} />)}
+                </tbody>
+              </table>
+            </div>
           </>
         )}
 
@@ -329,14 +333,16 @@ export default function PronunciationGuide() {
               介母（中間音）3種。子音と母音の間に入る母音で、単独で音節にもなります。<br />
               記号をクリックすると発音が聞けます。
             </p>
-            <table className="guide-table">
-              <thead>
-                <tr><th>記号</th><th>ピンイン</th><th>例</th><th>口の動かし方・コツ</th></tr>
-              </thead>
-              <tbody>
-                {MEDIALS.map(item => <Row key={item.symbol} item={item} speakText={item.example.split(' ')[1]} />)}
-              </tbody>
-            </table>
+            <div className="guide-table-scroll">
+              <table className="guide-table">
+                <thead>
+                  <tr><th>記号</th><th>ピンイン</th><th>例</th><th>口の動かし方・コツ</th></tr>
+                </thead>
+                <tbody>
+                  {MEDIALS.map(item => <Row key={item.symbol} item={item} speakText={item.example.split(' ')[1]} />)}
+                </tbody>
+              </table>
+            </div>
           </>
         )}
 
@@ -346,14 +352,16 @@ export default function PronunciationGuide() {
               母音・韻尾（韻母）13種。音節の核となる母音と末尾の鼻音など。<br />
               記号をクリックすると発音が聞けます。
             </p>
-            <table className="guide-table">
-              <thead>
-                <tr><th>記号</th><th>ピンイン</th><th>例</th><th>口の動かし方・コツ</th></tr>
-              </thead>
-              <tbody>
-                {FINALS.map(item => <Row key={item.symbol} item={item} speakText={item.example.split(' ')[1]} />)}
-              </tbody>
-            </table>
+            <div className="guide-table-scroll">
+              <table className="guide-table">
+                <thead>
+                  <tr><th>記号</th><th>ピンイン</th><th>例</th><th>口の動かし方・コツ</th></tr>
+                </thead>
+                <tbody>
+                  {FINALS.map(item => <Row key={item.symbol} item={item} speakText={item.example.split(' ')[1]} />)}
+                </tbody>
+              </table>
+            </div>
           </>
         )}
       </div>
