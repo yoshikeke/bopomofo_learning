@@ -312,6 +312,33 @@
   padding: 16px;
 }
 
+.section-translation {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  padding: 16px;
+}
+
+.translation-box {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.translation-label {
+  font-size: 0.75rem;
+  color: #64748b;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.translation-text {
+  margin: 0;
+  font-size: 1.05rem;
+  color: #334155;
+  line-height: 1.7;
+}
+
 .playback {
   display: flex;
   align-items: center;
