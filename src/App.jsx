@@ -65,7 +65,7 @@ export default function App() {
               🔤 発音ガイド
             </button>
             <button className="nav-btn" onClick={() => setShowKbModal(true)}>
-              ⌨️ 入力設定
+              ⚙️ 便利な設定
             </button>
           </nav>
         </div>
@@ -77,13 +77,6 @@ export default function App() {
         ) : (
           <>
             <section className="section-input">
-              <div className="pinyin-toggle">
-                <label className="toggle-label">
-                  <span>ピンイン表示</span>
-                  <input type="checkbox" checked={showPinyin} onChange={e => setShowPinyin(e.target.checked)} />
-                  <span className="toggle-slider" />
-                </label>
-              </div>
               <InputPanel onConvert={handleConvert} />
             </section>
 
@@ -127,6 +120,14 @@ export default function App() {
                     </div>
                   </section>
                 )}
+
+                <div className="pinyin-toggle">
+                  <label className="toggle-label">
+                    <span>ピンイン表示</span>
+                    <input type="checkbox" checked={showPinyin} onChange={e => setShowPinyin(e.target.checked)} />
+                    <span className="toggle-slider" />
+                  </label>
+                </div>
               </>
             )}
           </>
