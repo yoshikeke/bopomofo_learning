@@ -1,9 +1,12 @@
 import { useState } from 'react'
 import ImageCapture from './ImageCapture'
+import { translateToChinese } from '../utils/translate'
 
 export default function InputPanel({ onConvert }) {
   const [tab, setTab] = useState('text')
   const [text, setText] = useState('')
+  const [jaText, setJaText] = useState('')
+  const [translating, setTranslating] = useState(false)
 
   function handleOcrText(recognized) {
     setText(recognized)
@@ -17,6 +20,27 @@ export default function InputPanel({ onConvert }) {
     }
   }
 
+  function handleJaKeyDown(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      if (jaText.trim()) handleJaConvert()
+    }
+  }
+
+  async function handleJaConvert() {
+    if (!jaText.trim() || translating) return
+    setTranslating(true)
+    try {
+      const chinese = await translateToChinese(jaText)
+      setText(chinese)
+      onConvert({ mode: 'char', text: chinese })
+    } catch {
+      alert('翻訳に失敗しました。もう一度お試しください。')
+    } finally {
+      setTranslating(false)
+    }
+  }
+
   return (
     <div className="input-panel">
       <div className="tab-bar">
@@ -25,6 +49,9 @@ export default function InputPanel({ onConvert }) {
         </button>
         <button className={`tab ${tab === 'image' ? 'tab--active' : ''}`} onClick={() => setTab('image')}>
           📷 画像から読取
+        </button>
+        <button className={`tab ${tab === 'japanese' ? 'tab--active' : ''}`} onClick={() => setTab('japanese')}>
+          🇯🇵 日本語から変換
         </button>
       </div>
 
@@ -67,6 +94,27 @@ export default function InputPanel({ onConvert }) {
               </button>
             </div>
           )}
+        </>
+      )}
+
+      {tab === 'japanese' && (
+        <>
+          <div className="text-input-area">
+            <textarea
+              className="text-input"
+              placeholder="日本語を入力（例：お元気ですか？）&#10;Enterで変換、Shift+Enterで改行"
+              value={jaText}
+              onChange={e => setJaText(e.target.value)}
+              onKeyDown={handleJaKeyDown}
+              rows={4}
+            />
+          </div>
+          <div className="input-footer">
+            <span className="input-hint">日本語→中国語に翻訳して変換</span>
+            <button className="btn-primary" onClick={handleJaConvert} disabled={!jaText.trim() || translating}>
+              {translating ? '翻訳中...' : '変換する →'}
+            </button>
+          </div>
         </>
       )}
     </div>
