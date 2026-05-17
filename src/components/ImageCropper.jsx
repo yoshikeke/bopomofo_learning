@@ -45,17 +45,45 @@ export default function ImageCropper({ imageSrc, onCrop, onSkip }) {
   async function handleCrop() {
     if (!sel || sel.w < 10 || sel.h < 10) return
     const img = imgRef.current
-    const scaleX = img.naturalWidth / img.clientWidth
-    const scaleY = img.naturalHeight / img.clientHeight
+    const containerRect = containerRef.current.getBoundingClientRect()
+
+    // object-fit: contain での実際の描画領域を計算
+    // getBoundingClientRect() は object-fit の内部オフセットを反映しないため手動計算が必要
+    const naturalAspect = img.naturalWidth / img.naturalHeight
+    const containerAspect = containerRect.width / containerRect.height
+
+    let renderWidth, renderHeight, offsetX, offsetY
+    if (naturalAspect > containerAspect) {
+      renderWidth = containerRect.width
+      renderHeight = containerRect.width / naturalAspect
+      offsetX = 0
+      offsetY = (containerRect.height - renderHeight) / 2
+    } else {
+      renderHeight = containerRect.height
+      renderWidth = containerRect.height * naturalAspect
+      offsetX = (containerRect.width - renderWidth) / 2
+      offsetY = 0
+    }
+
+    const scaleX = img.naturalWidth / renderWidth
+    const scaleY = img.naturalHeight / renderHeight
+    const sx = Math.max(0, (sel.x - offsetX) * scaleX)
+    const sy = Math.max(0, (sel.y - offsetY) * scaleY)
+    const sw = Math.min(img.naturalWidth - sx, sel.w * scaleX)
+    const sh = Math.min(img.naturalHeight - sy, sel.h * scaleY)
     const canvas = document.createElement('canvas')
-    canvas.width = Math.round(sel.w * scaleX)
-    canvas.height = Math.round(sel.h * scaleY)
+    canvas.width = Math.round(sw)
+    canvas.height = Math.round(sh)
     canvas.getContext('2d').drawImage(
       img,
-      sel.x * scaleX, sel.y * scaleY, sel.w * scaleX, sel.h * scaleY,
+      sx, sy, sw, sh,
       0, 0, canvas.width, canvas.height
     )
-    canvas.toBlob(blob => onCrop(blob), 'image/png')
+    canvas.toBlob(blob => {
+      // DEBUG: クロップ結果を新しいタブで表示
+      
+      onCrop(blob)
+    }, 'image/png')
   }
 
   const hasSelection = sel && sel.w > 10 && sel.h > 10
