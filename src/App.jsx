@@ -16,8 +16,13 @@ export default function App() {
   const [showKbModal, setShowKbModal] = useState(false)
   const [originalText, setOriginalText] = useState('')
   const [japaneseText, setJapaneseText] = useState('')
+  const [showPinyin, setShowPinyin] = useState(() => localStorage.getItem('showPinyin') === 'true')
 
   const { currentIndex, isPlaying, play, pause, prev, next, jumpTo } = usePlayback(items, speed)
+
+  useEffect(() => {
+    localStorage.setItem('showPinyin', showPinyin)
+  }, [showPinyin])
 
   useEffect(() => {
     if (!originalText) { setJapaneseText(''); return }
@@ -72,6 +77,13 @@ export default function App() {
         ) : (
           <>
             <section className="section-input">
+              <div className="pinyin-toggle">
+                <label className="toggle-label">
+                  <span>ピンイン表示</span>
+                  <input type="checkbox" checked={showPinyin} onChange={e => setShowPinyin(e.target.checked)} />
+                  <span className="toggle-slider" />
+                </label>
+              </div>
               <InputPanel onConvert={handleConvert} />
             </section>
 
@@ -90,6 +102,7 @@ export default function App() {
                     items={items}
                     currentIndex={currentIndex}
                     onClickChar={jumpTo}
+                    showPinyin={showPinyin}
                   />
                 </section>
 

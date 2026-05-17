@@ -1,6 +1,6 @@
 // Items can be either character mode: { char, bopomofo, tone, color }
 // or pinyin mode: { syllable, bopomofo, tone, color }
-export default function BopomofoDisplay({ items, currentIndex, onClickChar }) {
+export default function BopomofoDisplay({ items, currentIndex, onClickChar, showPinyin }) {
   if (!items || items.length === 0) {
     return (
       <div className="bopo-empty">
@@ -24,6 +24,11 @@ export default function BopomofoDisplay({ items, currentIndex, onClickChar }) {
             style={isPlayable ? { cursor: 'pointer' } : {}}
             title={isPlayable ? 'クリックで再生' : undefined}
           >
+            {isPlayable && showPinyin && (
+              <span className="bopo-pinyin" style={{ color: item.color }}>
+                {item.pinyin}
+              </span>
+            )}
             {isPlayable && (
               <span className="bopo-ruby" style={{ color: item.color }}>
                 {item.bopomofo}

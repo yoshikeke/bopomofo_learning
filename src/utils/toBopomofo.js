@@ -174,7 +174,8 @@ export function convertToBopomofo(text) {
       return { char, bopomofo: null, tone: null, color: null }
     }
     const py = pinyin(char, { toneType: 'num', type: 'string', v: true })
+    const pyDisplay = pinyin(char, { toneType: 'symbol', type: 'string', v: true })
     const result = pinyinToBopomofo(py.trim())
-    return { char, ...result }
+    return { char, pinyin: pyDisplay.trim(), ...result }
   })
 }

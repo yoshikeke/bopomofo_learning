@@ -284,12 +284,68 @@
   box-shadow: 0 0 0 2px #fde68a;
 }
 
+.bopo-pinyin {
+  font-size: 0.65rem;
+  letter-spacing: 0.01em;
+  line-height: 1.2;
+  font-weight: 500;
+}
+
 .bopo-ruby {
   font-size: 0.72rem;
   letter-spacing: 0.02em;
   line-height: 1.2;
   margin-bottom: 2px;
   font-weight: 600;
+}
+
+.pinyin-toggle {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 8px;
+}
+
+.toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: #475569;
+  cursor: pointer;
+  user-select: none;
+}
+
+.toggle-label input {
+  display: none;
+}
+
+.toggle-slider {
+  width: 36px;
+  height: 20px;
+  background: #cbd5e1;
+  border-radius: 10px;
+  position: relative;
+  transition: background 0.2s;
+}
+
+.toggle-slider::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+
+.toggle-label input:checked + .toggle-slider {
+  background: #2563eb;
+}
+
+.toggle-label input:checked + .toggle-slider::after {
+  transform: translateX(16px);
 }
 
 .bopo-char {
