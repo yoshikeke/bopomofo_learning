@@ -1,4 +1,4 @@
-export default function PlaybackControls({ isPlaying, onPlay, onPause, onPrev, onNext, speed, onSpeedChange, disabled }) {
+export default function PlaybackControls({ isPlaying, onPlay, onPause, onPrev, onNext, interval, onIntervalChange, disabled }) {
   return (
     <div className="playback">
       <div className="playback-buttons">
@@ -14,16 +14,16 @@ export default function PlaybackControls({ isPlaying, onPlay, onPause, onPrev, o
         <button className="btn-icon" onClick={onNext} disabled={disabled} title="次へ">▶▶</button>
       </div>
       <div className="playback-speed">
-        <label>速度</label>
+        <label>間隔</label>
         <input
           type="range"
-          min="0.5"
-          max="1.5"
-          step="0.1"
-          value={speed}
-          onChange={e => onSpeedChange(parseFloat(e.target.value))}
+          min="300"
+          max="2000"
+          step="100"
+          value={interval}
+          onChange={e => onIntervalChange(parseInt(e.target.value))}
         />
-        <span>{speed.toFixed(1)}×</span>
+        <span>{(interval / 1000).toFixed(1)}秒</span>
       </div>
     </div>
   )

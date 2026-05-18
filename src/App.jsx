@@ -12,13 +12,13 @@ import './App.css'
 export default function App() {
   const [page, setPage] = useState('learn')
   const [items, setItems] = useState([])
-  const [speed, setSpeed] = useState(0.8)
+  const [interval, setInterval_] = useState(800)
   const [showKbModal, setShowKbModal] = useState(false)
   const [originalText, setOriginalText] = useState('')
   const [japaneseText, setJapaneseText] = useState('')
   const [showPinyin, setShowPinyin] = useState(() => localStorage.getItem('showPinyin') !== 'false')
 
-  const { currentIndex, isPlaying, play, pause, prev, next, jumpTo } = usePlayback(items, speed)
+  const { currentIndex, isPlaying, play, pause, prev, next, jumpTo } = usePlayback(items, interval)
 
   useEffect(() => {
     localStorage.setItem('showPinyin', showPinyin)
@@ -106,8 +106,8 @@ export default function App() {
                     onPause={pause}
                     onPrev={prev}
                     onNext={next}
-                    speed={speed}
-                    onSpeedChange={setSpeed}
+                    interval={interval}
+                    onIntervalChange={setInterval_}
                     disabled={!hasItems}
                   />
                 </section>

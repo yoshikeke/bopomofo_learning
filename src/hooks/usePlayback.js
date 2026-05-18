@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
 
-export function usePlayback(items, speed) {
+export function usePlayback(items, interval) {
   const [currentIndex, setCurrentIndex] = useState(-1)
   const [isPlaying, setIsPlaying] = useState(false)
   const timerRef = useRef(null)
@@ -10,13 +10,12 @@ export function usePlayback(items, speed) {
 
   const speakItem = useCallback((item) => {
     window.speechSynthesis.cancel()
-    // char mode = Chinese character, syllable mode = pinyin string
     const text = item.char ?? item.syllable ?? ''
     const utterance = new SpeechSynthesisUtterance(text)
     utterance.lang = 'zh-TW'
-    utterance.rate = speed
+    utterance.rate = 0.8
     window.speechSynthesis.speak(utterance)
-  }, [speed])
+  }, [])
 
   // Map playable index → original items index
   const getOriginalIndex = useCallback((playableIdx) => {
@@ -44,11 +43,10 @@ export function usePlayback(items, speed) {
     setCurrentIndex(origIdx)
     speakItem(items[origIdx])
 
-    const delay = Math.max(400, 1200 / speed)
     timerRef.current = setTimeout(() => {
       playFrom(playableIdx + 1)
-    }, delay)
-  }, [playableItems.length, getOriginalIndex, items, speakItem, speed])
+    }, interval)
+  }, [playableItems.length, getOriginalIndex, items, speakItem, interval])
 
   const play = useCallback(() => {
     if (playableItems.length === 0) return
@@ -74,10 +72,9 @@ export function usePlayback(items, speed) {
       speakItem(items[origIdx])
     }
     if (isPlaying) {
-      const delay = Math.max(400, 1200 / speed)
-      timerRef.current = setTimeout(() => playFrom(nxt + 1), delay)
+      timerRef.current = setTimeout(() => playFrom(nxt + 1), interval)
     }
-  }, [getOriginalIndex, isPlaying, items, playFrom, speakItem, speed])
+  }, [getOriginalIndex, isPlaying, items, playFrom, speakItem, interval])
 
   const next = useCallback(() => {
     clearTimeout(timerRef.current)
@@ -90,10 +87,9 @@ export function usePlayback(items, speed) {
       speakItem(items[origIdx])
     }
     if (isPlaying) {
-      const delay = Math.max(400, 1200 / speed)
-      timerRef.current = setTimeout(() => playFrom(nxt + 1), delay)
+      timerRef.current = setTimeout(() => playFrom(nxt + 1), interval)
     }
-  }, [getOriginalIndex, isPlaying, items, playFrom, playableItems.length, speakItem, speed])
+  }, [getOriginalIndex, isPlaying, items, playFrom, playableItems.length, speakItem, interval])
 
   const jumpTo = useCallback((origIdx) => {
     stop()
