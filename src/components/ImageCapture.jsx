@@ -20,6 +20,7 @@ export default function ImageCapture({ onTextReady }) {
   const [progress, setProgress] = useState(0)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const [vertical, setVertical] = useState(false)
   const normalizedRef = useRef(null)
   const fileRef = useRef()
   const cameraRef = useRef()
@@ -47,7 +48,7 @@ export default function ImageCapture({ onTextReady }) {
     setLoading(true)
     setProgress(0)
     try {
-      const text = await recognizeImage(source, setProgress)
+      const text = await recognizeImage(source, setProgress, { vertical })
       onTextReady(text)
     } catch (e) {
       console.error(e)
@@ -77,6 +78,21 @@ export default function ImageCapture({ onTextReady }) {
 
   return (
     <div className="image-capture">
+      <div className="ocr-direction-toggle">
+        <button
+          className={`btn-secondary ${!vertical ? 'btn-secondary--active' : ''}`}
+          onClick={() => setVertical(false)}
+        >
+          横書き
+        </button>
+        <button
+          className={`btn-secondary ${vertical ? 'btn-secondary--active' : ''}`}
+          onClick={() => setVertical(true)}
+        >
+          縦書き
+        </button>
+      </div>
+
       {!showCropper && (
         <div className="image-capture-buttons">
           <button className="btn-secondary" onClick={() => cameraRef.current.click()}>
@@ -117,9 +133,7 @@ export default function ImageCapture({ onTextReady }) {
           <div className="image-preview-wrap">
             <img src={previewUrl} alt="処理済み画像" className="image-preview" />
           </div>
-          <button className="btn-secondary" style={{ marginTop: 8 }} onClick={handleReset}>
-            別の画像を選ぶ
-          </button>
+          
         </>
       )}
 

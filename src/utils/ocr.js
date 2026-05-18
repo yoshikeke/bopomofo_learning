@@ -48,7 +48,7 @@ function filterChinese(text) {
   return Array.from(text).filter(ch => isAllowedChar(ch.codePointAt(0))).join('')
 }
 
-export async function recognizeImage(imageSource, onProgress) {
+export async function recognizeImage(imageSource, onProgress, { vertical = false } = {}) {
   let source = imageSource
   if (imageSource instanceof Blob) {
     try {
@@ -67,7 +67,7 @@ export async function recognizeImage(imageSource, onProgress) {
   })
 
   await worker.setParameters({
-    tessedit_pageseg_mode: '6', // SINGLE_BLOCK
+    tessedit_pageseg_mode: vertical ? '5' : '6', // 5=SINGLE_BLOCK_VERT_TEXT, 6=SINGLE_BLOCK
   })
 
   const result = await worker.recognize(source)

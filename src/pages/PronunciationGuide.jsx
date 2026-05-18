@@ -231,6 +231,7 @@ function speak(text) {
   const u = new SpeechSynthesisUtterance(text)
   u.lang = 'zh-TW'
   u.rate = 0.7
+  u.volume = 1.0
   window.speechSynthesis.speak(u)
 }
 

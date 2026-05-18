@@ -27,6 +27,7 @@ export function usePlayback(items, interval) {
     const utterance = new SpeechSynthesisUtterance(text)
     utterance.lang = 'zh-TW'
     utterance.rate = 1.0
+    utterance.volume = 1.0
     window.speechSynthesis.speak(utterance)
     indexRef.current = playableIdx
     setCurrentIndex(origIdx)
