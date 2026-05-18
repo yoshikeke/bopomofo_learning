@@ -90,6 +90,15 @@ export default function ImageCropper({ imageSrc, onCrop, onSkip }) {
 
   return (
     <div className="cropper-wrap">
+      
+      <div className="cropper-actions">
+        <button className="btn-primary" onClick={handleCrop} disabled={!hasSelection}>
+          この範囲を読み取る
+        </button>
+        <button className="btn-secondary" onClick={onSkip}>
+          全体を読み取る
+        </button>
+      </div>
       <p className="cropper-hint">読み取りたい部分をドラッグして選択してください</p>
       <div
         ref={containerRef}
@@ -116,14 +125,7 @@ export default function ImageCropper({ imageSrc, onCrop, onSkip }) {
           />
         )}
       </div>
-      <div className="cropper-actions">
-        <button className="btn-primary" onClick={handleCrop} disabled={!hasSelection}>
-          この範囲を読み取る
-        </button>
-        <button className="btn-secondary" onClick={onSkip}>
-          全体を読み取る
-        </button>
-      </div>
+      
     </div>
   )
 }
