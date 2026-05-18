@@ -58,11 +58,7 @@ export async function recognizeImage(imageSource, onProgress) {
     }
   }
 
-  // Use createWorker to set PSM = SINGLE_BLOCK (6).
-  // Default PSM AUTO (3) treats the image as a full page layout and may skip
-  // regions of a cropped image. SINGLE_BLOCK assumes a uniform block of text,
-  // which matches what the user clips from a textbook.
-  const worker = await Tesseract.createWorker('chi_tra', 1, {
+  const worker = await Tesseract.createWorker(['chi_tra', 'eng'], 1, {
     logger: m => {
       if (m.status === 'recognizing text' && onProgress) {
         onProgress(Math.round(m.progress * 100))

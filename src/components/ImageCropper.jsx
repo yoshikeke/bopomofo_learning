@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 
 export default function ImageCropper({ imageSrc, onCrop, onSkip }) {
   const imgRef = useRef()
@@ -41,6 +41,23 @@ export default function ImageCropper({ imageSrc, onCrop, onSkip }) {
   function onUp() {
     draggingRef.current = false
   }
+
+  // タッチイベントを { passive: false } で登録し、ドラッグ中のスクロールを防止
+  useEffect(() => {
+    const el = containerRef.current
+    if (!el) return
+    const touchStart = (e) => { e.preventDefault(); onDown(e) }
+    const touchMove = (e) => { if (draggingRef.current) e.preventDefault(); onMove(e) }
+    const touchEnd = () => onUp()
+    el.addEventListener('touchstart', touchStart, { passive: false })
+    el.addEventListener('touchmove', touchMove, { passive: false })
+    el.addEventListener('touchend', touchEnd)
+    return () => {
+      el.removeEventListener('touchstart', touchStart)
+      el.removeEventListener('touchmove', touchMove)
+      el.removeEventListener('touchend', touchEnd)
+    }
+  })
 
   async function handleCrop() {
     if (!sel || sel.w < 10 || sel.h < 10) return
@@ -88,16 +105,21 @@ export default function ImageCropper({ imageSrc, onCrop, onSkip }) {
 
   const hasSelection = sel && sel.w > 10 && sel.h > 10
 
+  const actionButtons = (
+    <>
+      <button className="btn-primary" onClick={handleCrop} disabled={!hasSelection}>
+        この範囲を読み取る
+      </button>
+      <button className="btn-secondary" onClick={onSkip}>
+        全体を読み取る
+      </button>
+    </>
+  )
+
   return (
     <div className="cropper-wrap">
-      
-      <div className="cropper-actions">
-        <button className="btn-primary" onClick={handleCrop} disabled={!hasSelection}>
-          この範囲を読み取る
-        </button>
-        <button className="btn-secondary" onClick={onSkip}>
-          全体を読み取る
-        </button>
+      <div className="cropper-actions cropper-actions--top">
+        {actionButtons}
       </div>
       <p className="cropper-hint">読み取りたい部分をドラッグして選択してください</p>
       <div
@@ -107,9 +129,6 @@ export default function ImageCropper({ imageSrc, onCrop, onSkip }) {
         onMouseMove={onMove}
         onMouseUp={onUp}
         onMouseLeave={onUp}
-        onTouchStart={onDown}
-        onTouchMove={onMove}
-        onTouchEnd={onUp}
       >
         <img
           ref={imgRef}
@@ -125,7 +144,9 @@ export default function ImageCropper({ imageSrc, onCrop, onSkip }) {
           />
         )}
       </div>
-      
+      <div className="cropper-actions cropper-actions--bottom">
+        {actionButtons}
+      </div>
     </div>
   )
 }

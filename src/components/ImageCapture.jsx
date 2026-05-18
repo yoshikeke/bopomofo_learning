@@ -113,12 +113,14 @@ export default function ImageCapture({ onTextReady }) {
       )}
 
       {!showCropper && previewUrl && !loading && (
-        <div className="image-preview-wrap">
-          <img src={previewUrl} alt="処理済み画像" className="image-preview" />
-          <button className="btn-secondary" style={{ margin: '8px 0 0' }} onClick={handleReset}>
+        <>
+          <div className="image-preview-wrap">
+            <img src={previewUrl} alt="処理済み画像" className="image-preview" />
+          </div>
+          <button className="btn-secondary" style={{ marginTop: 8 }} onClick={handleReset}>
             別の画像を選ぶ
           </button>
-        </div>
+        </>
       )}
 
       {loading && (

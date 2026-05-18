@@ -8,52 +8,51 @@ export function usePlayback(items, interval) {
 
   const playableItems = items.filter(item => item.bopomofo !== null)
 
-  const speakItem = useCallback((item) => {
-    window.speechSynthesis.cancel()
-    const text = item.char ?? item.syllable ?? ''
-    const utterance = new SpeechSynthesisUtterance(text)
-    utterance.lang = 'zh-TW'
-    utterance.rate = 0.8
-    window.speechSynthesis.speak(utterance)
-  }, [])
-
-  // Map playable index → original items index
-  const getOriginalIndex = useCallback((playableIdx) => {
+  // Map playable index -> original items index
+  function getOriginalIndex(playableIdx) {
     let count = -1
     for (let i = 0; i < items.length; i++) {
       if (items[i].bopomofo !== null) count++
       if (count === playableIdx) return i
     }
     return -1
-  }, [items])
+  }
 
-  const stop = useCallback(() => {
-    setIsPlaying(false)
-    clearTimeout(timerRef.current)
+  function speakAt(playableIdx) {
     window.speechSynthesis.cancel()
-  }, [])
-
-  const playFrom = useCallback((playableIdx) => {
-    if (playableIdx >= playableItems.length) {
-      setIsPlaying(false)
-      return
-    }
-    indexRef.current = playableIdx
     const origIdx = getOriginalIndex(playableIdx)
+    if (origIdx < 0) return
+    const item = items[origIdx]
+    const text = item.char ?? item.syllable ?? ''
+    const utterance = new SpeechSynthesisUtterance(text)
+    utterance.lang = 'zh-TW'
+    utterance.rate = 1.0
+    window.speechSynthesis.speak(utterance)
+    indexRef.current = playableIdx
     setCurrentIndex(origIdx)
-    speakItem(items[origIdx])
+  }
 
+  // Auto-advance effect: when playing, schedule next step after interval
+  useEffect(() => {
+    if (!isPlaying) return
+    clearTimeout(timerRef.current)
     timerRef.current = setTimeout(() => {
-      playFrom(playableIdx + 1)
+      const next = indexRef.current + 1
+      if (next >= playableItems.length) {
+        setIsPlaying(false)
+        return
+      }
+      speakAt(next)
     }, interval)
-  }, [playableItems.length, getOriginalIndex, items, speakItem, interval])
+    return () => clearTimeout(timerRef.current)
+  }, [isPlaying, currentIndex, interval, playableItems.length]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const play = useCallback(() => {
     if (playableItems.length === 0) return
-    setIsPlaying(true)
     const startIdx = indexRef.current < 0 || indexRef.current >= playableItems.length ? 0 : indexRef.current
-    playFrom(startIdx)
-  }, [playableItems.length, playFrom])
+    speakAt(startIdx)
+    setIsPlaying(true)
+  }, [playableItems.length, items]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const pause = useCallback(() => {
     setIsPlaying(false)
@@ -61,38 +60,26 @@ export function usePlayback(items, interval) {
     window.speechSynthesis.cancel()
   }, [])
 
-  const prev = useCallback(() => {
+  const stop = useCallback(() => {
+    setIsPlaying(false)
     clearTimeout(timerRef.current)
     window.speechSynthesis.cancel()
+  }, [])
+
+  const prev = useCallback(() => {
     const nxt = Math.max(0, indexRef.current - 1)
-    indexRef.current = nxt
-    const origIdx = getOriginalIndex(nxt)
-    if (origIdx >= 0) {
-      setCurrentIndex(origIdx)
-      speakItem(items[origIdx])
-    }
-    if (isPlaying) {
-      timerRef.current = setTimeout(() => playFrom(nxt + 1), interval)
-    }
-  }, [getOriginalIndex, isPlaying, items, playFrom, speakItem, interval])
+    speakAt(nxt)
+  }, [items]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const next = useCallback(() => {
-    clearTimeout(timerRef.current)
-    window.speechSynthesis.cancel()
     const nxt = Math.min(playableItems.length - 1, indexRef.current + 1)
-    indexRef.current = nxt
-    const origIdx = getOriginalIndex(nxt)
-    if (origIdx >= 0) {
-      setCurrentIndex(origIdx)
-      speakItem(items[origIdx])
-    }
-    if (isPlaying) {
-      timerRef.current = setTimeout(() => playFrom(nxt + 1), interval)
-    }
-  }, [getOriginalIndex, isPlaying, items, playFrom, playableItems.length, speakItem, interval])
+    speakAt(nxt)
+  }, [playableItems.length, items]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const jumpTo = useCallback((origIdx) => {
-    stop()
+    setIsPlaying(false)
+    clearTimeout(timerRef.current)
+    window.speechSynthesis.cancel()
     let playableIdx = -1
     let count = -1
     for (let i = 0; i <= origIdx && i < items.length; i++) {
@@ -100,18 +87,19 @@ export function usePlayback(items, interval) {
       if (i === origIdx) playableIdx = count
     }
     if (playableIdx < 0) return
-    indexRef.current = playableIdx
-    setCurrentIndex(origIdx)
-    speakItem(items[origIdx])
-  }, [items, speakItem, stop])
-
-  useEffect(() => {
-    stop()
-    setCurrentIndex(-1)
-    indexRef.current = -1
+    speakAt(playableIdx)
   }, [items]) // eslint-disable-line react-hooks/exhaustive-deps
 
+  const reset = useCallback(() => {
+    setIsPlaying(false)
+    clearTimeout(timerRef.current)
+    window.speechSynthesis.cancel()
+    setCurrentIndex(-1)
+    indexRef.current = -1
+  }, [])
+
+  // Cleanup on unmount
   useEffect(() => () => { clearTimeout(timerRef.current); window.speechSynthesis.cancel() }, [])
 
-  return { currentIndex, isPlaying, play, pause, stop, prev, next, jumpTo }
+  return { currentIndex, isPlaying, play, pause, stop, reset, prev, next, jumpTo }
 }

@@ -18,7 +18,7 @@ export default function App() {
   const [japaneseText, setJapaneseText] = useState('')
   const [showPinyin, setShowPinyin] = useState(() => localStorage.getItem('showPinyin') !== 'false')
 
-  const { currentIndex, isPlaying, play, pause, prev, next, jumpTo } = usePlayback(items, interval)
+  const { currentIndex, isPlaying, play, pause, stop, reset, prev, next, jumpTo } = usePlayback(items, interval)
 
   useEffect(() => {
     localStorage.setItem('showPinyin', showPinyin)
@@ -37,6 +37,7 @@ export default function App() {
 
   function handleConvert({ text }) {
     if (!text.trim()) return
+    reset()
     setOriginalText(text)
     setItems(convertToBopomofo(text))
   }
@@ -60,7 +61,7 @@ export default function App() {
             </button>
             <button
               className={`nav-btn ${page === 'guide' ? 'nav-btn--active' : ''}`}
-              onClick={() => setPage('guide')}
+              onClick={() => { stop(); setPage('guide') }}
             >
               🔤 発音ガイド
             </button>
