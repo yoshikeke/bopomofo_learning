@@ -87,9 +87,10 @@ export default function InputPanel({ onConvert }) {
 
       {tab === 'image' && (
         <>
-          <ImageCapture onTextReady={handleOcrText} />
+        <ImageCapture onTextReady={handleOcrText} />
           {text && (
             <div className="ocr-result">
+              
               <p className="ocr-result-label">認識されたテキスト（編集可能）：</p>
               <textarea
                 className="text-input"
@@ -103,6 +104,7 @@ export default function InputPanel({ onConvert }) {
               </button>
             </div>
           )}
+          
         </>
       )}
 
