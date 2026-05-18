@@ -92,6 +92,11 @@ const MEDIALS = [
   {
     symbol: 'ㄧ', pinyin: 'i / y', example: 'yī 一',
     steps: ['唇を左右に引っ張るように伸ばす', '日本語「イ」と同じ感覚', '子音の後では「i」、単独では「yi」と書く'],
+    warn: true,
+    detail: {
+      title: 'ㄧ が変化する場合（舌先母音）',
+      body: 'ㄓ(zh)・ㄔ(ch)・ㄕ(sh)・ㄖ(r)・ㄗ(z)・ㄘ(c)・ㄙ(s) の後に付くㄧは、日本語の「イ」とは全く違う音になります。舌先を上歯茎の裏（または巻き舌の位置）に固定したまま、口をほとんど開かずに「ウ」のような曖昧な音を出します。例：知(zhī)・吃(chī)・詩(shī)・日(rì)・字(zì)。これらを日本語の「チ」「シ」のように発音するのは最もよくある誤りです。',
+    },
   },
   {
     symbol: 'ㄨ', pinyin: 'u / w', example: 'wū 屋',
@@ -100,6 +105,11 @@ const MEDIALS = [
   {
     symbol: 'ㄩ', pinyin: 'ü / yu', example: 'yú 魚',
     steps: ['「イ」の口の形をキープしたまま', '「ウ」と発音する（唇を丸める）', 'フランス語の「u」と同じ音', '日本語にない音なので練習が必要'],
+    warn: true,
+    detail: {
+      title: 'ㄩ（ü）— 日本語にない母音',
+      body: '日本語には「イ」と「ウ」の中間に当たる前舌円唇母音が存在しません。練習法：まず「イー」と伸ばし、舌の位置を変えずに唇だけゆっくり丸めていきます。正しくできると「イ」でも「ウ」でもない独特の音になります。ドイツ語の「ü」やフランス語の「u」と同じ音です。ㄐ(j)・ㄑ(q)・ㄒ(x)の後ではピンインで「u」と書かれますが、実際の発音は「ü」です（例：去 qù = qǜ）。',
+    },
   },
 ]
 
@@ -107,54 +117,78 @@ const FINALS = [
   {
     symbol: 'ㄚ', pinyin: 'a', example: 'bā 八',
     steps: ['口を縦に大きく開ける', '舌は平らに下げる', '日本語「ア」より口を大きく開ける'],
+
   },
   {
     symbol: 'ㄛ', pinyin: 'o', example: 'bō 波',
     steps: ['唇を丸めてすぼめる', '日本語「オ」より唇をさらに丸く'],
+
   },
   {
     symbol: 'ㄜ', pinyin: 'e', example: 'gē 哥',
-    steps: ['唇を丸めずに口を半開き', '舌を奥に引く', '「エ」と「オ」の中間のような曖昧母音'],
+    steps: ['唇を丸めずに口を半開き', '舌を奥に引く', '「エ」と「オ」の中間のような曖昧母音', '※ 音声は「gē 哥」（ㄍ+ㄜ）で再生されます'],
+
+    warn: true,
+    detail: {
+      title: 'ㄜ（e）— 曖昧母音',
+      body: '日本語の「エ」とは全く異なる音です。口を半分開けたまま力を抜き、舌を奥に引いた状態で声を出します。IPA表記では「ɤ」（非円唇半閉後舌母音）に相当します。日本語話者は「エ」や「ウ」で代用しがちですが、どちらも不正確です。練習法：「ア」と言いながら口を閉じていき、半分くらいのところで止めます。そのまま舌を後ろに引くと、正しい「ㄜ」の音に近づきます。「哥(gē)」「喝(hē)」「餓(è)」で練習しましょう。',
+    },
   },
   {
     symbol: 'ㄝ', pinyin: 'ê', example: 'jiē 街',
-    steps: ['口を横に広げて「エ」', 'ㄧの後などに現れる（単独では稀）'],
+    steps: ['口を横に広げて「エ」', 'ㄧの後などに現れる（単独では稀）', '※ 音声は「	jiē 街」（ㄐ+ㄧ+ㄝ）で再生されます'],
+
   },
   {
     symbol: 'ㄞ', pinyin: 'ai', example: 'āi 哀',
     steps: ['「ア」から「イ」へ滑らかに移行', '日本語「アイ」に近い'],
+
   },
   {
     symbol: 'ㄟ', pinyin: 'ei', example: 'měi 美',
     steps: ['「エ」から「イ」へ滑らかに移行', '日本語「エイ」に近い', '※ 音声は「měi 美」（ㄇ＋ㄟ）で再生されます'],
+
   },
   {
     symbol: 'ㄠ', pinyin: 'ao', example: 'āo 凹',
     steps: ['「ア」から「オ」へ移行', '日本語「アオ」に近い'],
+
   },
   {
     symbol: 'ㄡ', pinyin: 'ou', example: 'ōu 歐',
     steps: ['「オ」から「ウ」へ移行', '日本語「オウ」に近い'],
+
   },
   {
     symbol: 'ㄢ', pinyin: 'an', example: 'ān 安',
     steps: ['「ア」から始め、舌先を上歯の裏に当てて「ン」で終わる', '前鼻音（舌先で終わる「ン」）'],
+
   },
   {
     symbol: 'ㄣ', pinyin: 'en', example: 'ēn 恩',
     steps: ['曖昧な「エ・ウ」から舌先を上歯茎に当てて「ン」で終わる', '前鼻音'],
+
   },
   {
     symbol: 'ㄤ', pinyin: 'ang', example: 'āng 昂',
     steps: ['「ア」から舌の奥を軟口蓋に当てて「ン」で終わる', '後鼻音（英語の "-ng" と同じ）'],
+
   },
   {
     symbol: 'ㄥ', pinyin: 'eng', example: 'chéng 城',
     steps: ['「エ・ウ」系の母音から舌の奥を上げて「ン」で終わる', '後鼻音（英語の "-ng" と同じ）', '※ 音声は「chéng 城」（ㄔ＋ㄥ）で再生されます'],
+
+    warn: true,
   },
   {
     symbol: 'ㄦ', pinyin: 'er', example: 'ér 兒',
     steps: ['「ア」から舌先を丸めながら（そり舌）発音', '英語の「er」に近いそり舌母音', '単独で音節になる（例：兒 ér）'],
+
+    warn: true,
+    detail: {
+      title: 'ㄦ（er）— 巻き舌母音',
+      body: '日本語の「る」は舌先で歯茎を弾く音ですが、ㄦは舌先を反り上げた状態で母音を出す「そり舌母音」です。アメリカ英語の "er"（her, bird）に近い音です。練習法：まず「ア」と発音し、そのまま舌先をゆっくり上に反らせていきます。舌先が口の天井（硬口蓋）に向かって反っていく途中で止め、その状態で声を出し続けます。舌先はどこにも触れません。台湾華語では「兒(ér)」「二(èr)」「耳(ěr)」などに現れます。',
+    },
   },
 ]
 
@@ -211,6 +245,7 @@ function Row({ item, speakText }) {
         >
           {item.symbol}
         </button>
+        {item.warn && <span className="guide-warn-tag">日本語にない音</span>}
       </td>
       <td className="guide-cell-pinyin">{item.pinyin}</td>
       <td className="guide-cell-example">{item.example}</td>
@@ -218,6 +253,12 @@ function Row({ item, speakText }) {
         <ul className="guide-steps">
           {item.steps.map((s, i) => <li key={i}>{s}</li>)}
         </ul>
+        {item.detail && (
+          <details className="guide-detail">
+            <summary className="guide-detail-summary">{item.detail.title}</summary>
+            <p className="guide-detail-body">{item.detail.body}</p>
+          </details>
+        )}
       </td>
     </tr>
   )
