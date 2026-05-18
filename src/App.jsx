@@ -16,7 +16,7 @@ export default function App() {
   const [showKbModal, setShowKbModal] = useState(false)
   const [originalText, setOriginalText] = useState('')
   const [japaneseText, setJapaneseText] = useState('')
-  const [showPinyin, setShowPinyin] = useState(() => localStorage.getItem('showPinyin') === 'true')
+  const [showPinyin, setShowPinyin] = useState(() => localStorage.getItem('showPinyin') !== 'false')
 
   const { currentIndex, isPlaying, play, pause, prev, next, jumpTo } = usePlayback(items, speed)
 

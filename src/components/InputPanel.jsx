@@ -1,16 +1,25 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import ImageCapture from './ImageCapture'
 import { translateToChinese } from '../utils/translate'
 
+const VALID_TABS = ['text', 'image', 'japanese']
+
 export default function InputPanel({ onConvert }) {
-  const [tab, setTab] = useState('text')
+  const [tab, setTab] = useState(() => {
+    const saved = localStorage.getItem('inputTab')
+    return VALID_TABS.includes(saved) ? saved : 'text'
+  })
+
+  useEffect(() => {
+    localStorage.setItem('inputTab', tab)
+  }, [tab])
   const [text, setText] = useState('')
   const [jaText, setJaText] = useState('')
   const [translating, setTranslating] = useState(false)
 
   function handleOcrText(recognized) {
     setText(recognized)
-    setTab('text')
+    if (recognized.trim()) onConvert({ mode: 'char', text: recognized })
   }
 
   function handleTextKeyDown(e) {

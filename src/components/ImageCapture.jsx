@@ -79,12 +79,13 @@ export default function ImageCapture({ onTextReady }) {
     <div className="image-capture">
       {!showCropper && (
         <div className="image-capture-buttons">
-          <button className="btn-secondary" onClick={() => fileRef.current.click()}>
-            📁 ファイルを選択
-          </button>
           <button className="btn-secondary" onClick={() => cameraRef.current.click()}>
             📷 カメラで撮影
           </button>
+          <button className="btn-secondary" onClick={() => fileRef.current.click()}>
+            📁 ファイルを選択
+          </button>
+          
           <input
             ref={fileRef}
             type="file"
