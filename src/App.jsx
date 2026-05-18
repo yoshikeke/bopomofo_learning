@@ -7,6 +7,7 @@ import PronunciationGuide from './pages/PronunciationGuide'
 import { convertToBopomofo } from './utils/toBopomofo'
 import { usePlayback } from './hooks/usePlayback'
 import { translateToJapanese } from './utils/translate'
+import { trackEvent } from './utils/analytics'
 import './App.css'
 
 export default function App() {
@@ -35,11 +36,12 @@ export default function App() {
     return () => { cancelled = true }
   }, [originalText])
 
-  function handleConvert({ text }) {
+  function handleConvert({ text, inputMode }) {
     if (!text.trim()) return
     reset()
     setOriginalText(text)
     setItems(convertToBopomofo(text))
+    trackEvent('convert', { input_mode: inputMode || 'text', char_count: text.length })
   }
 
   const hasItems = items.length > 0
@@ -61,7 +63,7 @@ export default function App() {
             </button>
             <button
               className={`nav-btn ${page === 'guide' ? 'nav-btn--active' : ''}`}
-              onClick={() => { stop(); setPage('guide') }}
+              onClick={() => { stop(); setPage('guide'); trackEvent('page_view_guide') }}
             >
               🔤 発音ガイド
             </button>
@@ -103,7 +105,7 @@ export default function App() {
                 <section className="section-controls">
                   <PlaybackControls
                     isPlaying={isPlaying}
-                    onPlay={play}
+                    onPlay={() => { play(); trackEvent('playback_start') }}
                     onPause={pause}
                     onPrev={prev}
                     onNext={next}
@@ -125,7 +127,7 @@ export default function App() {
                 <div className="pinyin-toggle">
                   <label className="toggle-label">
                     <span>ピンイン表示</span>
-                    <input type="checkbox" checked={showPinyin} onChange={e => setShowPinyin(e.target.checked)} />
+                    <input type="checkbox" checked={showPinyin} onChange={e => { setShowPinyin(e.target.checked); trackEvent('toggle_pinyin', { enabled: e.target.checked }) }} />
                     <span className="toggle-slider" />
                   </label>
                 </div>

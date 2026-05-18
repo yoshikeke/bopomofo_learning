@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { trackEvent } from '../utils/analytics'
 
 // ── Data ──────────────────────────────────────────────────────────────────
 const INITIALS = [
@@ -309,7 +310,7 @@ export default function PronunciationGuide() {
           <button
             key={s.id}
             className={`guide-tab ${section === s.id ? 'guide-tab--active' : ''}`}
-            onClick={() => setSection(s.id)}
+            onClick={() => { setSection(s.id); trackEvent('guide_section', { section: s.id }) }}
           >
             {s.label}
           </button>

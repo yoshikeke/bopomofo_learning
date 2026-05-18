@@ -19,13 +19,13 @@ export default function InputPanel({ onConvert }) {
 
   function handleOcrText(recognized) {
     setText(recognized)
-    if (recognized.trim()) onConvert({ mode: 'char', text: recognized })
+    if (recognized.trim()) onConvert({ mode: 'char', text: recognized, inputMode: 'image' })
   }
 
   function handleTextKeyDown(e) {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
-      if (text.trim()) onConvert({ mode: 'char', text })
+      if (text.trim()) onConvert({ mode: 'char', text, inputMode: tab })
     }
   }
 
@@ -42,7 +42,7 @@ export default function InputPanel({ onConvert }) {
     try {
       const chinese = await translateToChinese(jaText)
       setText(chinese)
-      onConvert({ mode: 'char', text: chinese })
+      onConvert({ mode: 'char', text: chinese, inputMode: 'japanese' })
     } catch {
       alert('翻訳に失敗しました。もう一度お試しください。')
     } finally {
@@ -78,7 +78,7 @@ export default function InputPanel({ onConvert }) {
           </div>
           <div className="input-footer">
             <span className="input-hint">Enterキーで変換</span>
-            <button className="btn-primary" onClick={() => onConvert({ mode: 'char', text })} disabled={!text.trim()}>
+            <button className="btn-primary" onClick={() => onConvert({ mode: 'char', text, inputMode: 'text' })} disabled={!text.trim()}>
               変換する →
             </button>
           </div>
@@ -99,7 +99,7 @@ export default function InputPanel({ onConvert }) {
                 onKeyDown={handleTextKeyDown}
                 rows={3}
               />
-              <button className="btn-primary" onClick={() => onConvert({ mode: 'char', text })} disabled={!text.trim()}>
+              <button className="btn-primary" onClick={() => onConvert({ mode: 'char', text, inputMode: 'image' })} disabled={!text.trim()}>
                 変換する →
               </button>
             </div>
