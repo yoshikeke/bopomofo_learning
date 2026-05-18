@@ -9,7 +9,7 @@ export const TONE_COLORS = {
   1: '#2563eb', // blue
   2: '#16a34a', // green
   3: '#ea580c', // orange
-  4: '#dc2626', // red
+  4: '#dcd926', // red
   5: '#6b7280', // gray (neutral)
   0: '#6b7280',
 }
@@ -164,12 +164,82 @@ function pinyinToBopomofo(syllableWithTone) {
   }
 }
 
-// Returns array of { char, bopomofo, tone, color }
+// ── Tone sandhi helpers ──────────────────────────────────────────────────
+
+// Pinyin tone-mark vowel groups: index 0=1st, 1=2nd, 2=3rd, 3=4th
+const TONE_VOWELS = [
+  ['ā','á','ǎ','à'], ['ē','é','ě','è'], ['ī','í','ǐ','ì'],
+  ['ō','ó','ǒ','ò'], ['ū','ú','ǔ','ù'], ['ǖ','ǘ','ǚ','ǜ'],
+]
+
+function changePinyinTone(pyStr, newTone) {
+  if (newTone < 1 || newTone > 4) return pyStr
+  for (const group of TONE_VOWELS) {
+    for (const ch of group) {
+      if (pyStr.includes(ch)) {
+        return pyStr.replace(ch, group[newTone - 1])
+      }
+    }
+  }
+  return pyStr
+}
+
+function changeItemTone(item, newTone) {
+  // Strip old tone mark from bopomofo
+  let base = item.bopomofo.replace(/[ˊˇˋ˙]$/, '')
+  return {
+    ...item,
+    tone: newTone,
+    color: TONE_COLORS[newTone] ?? TONE_COLORS[5],
+    bopomofo: base + (TONE_MARKS[newTone] ?? ''),
+    pinyin: changePinyinTone(item.pinyin, newTone),
+  }
+}
+
+function applyToneSandhi(items) {
+  const result = items.map(item => ({ ...item }))
+  const chinese = result.filter(item => item.bopomofo !== null)
+
+  // 1. 三声連続: 連続する三声の最後以外を二声に変える
+  for (let i = 0; i < chinese.length - 1; i++) {
+    if (chinese[i].tone === 3 && chinese[i + 1].tone === 3) {
+      Object.assign(chinese[i], changeItemTone(chinese[i], 2))
+    }
+  }
+
+  // 2.「不」の声調変化: 四声の前で二声になる
+  for (let i = 0; i < chinese.length - 1; i++) {
+    if (chinese[i].char === '不' && chinese[i + 1].tone === 4) {
+      Object.assign(chinese[i], changeItemTone(chinese[i], 2))
+    }
+  }
+
+  // 3.「一」の声調変化:
+  //   - 四声の前 → 二声
+  //   - 一/二/三声の前 → 四声
+  //   - 末尾・単独・序数 → 一声のまま
+  for (let i = 0; i < chinese.length; i++) {
+    if (chinese[i].char !== '一') continue
+    const next = chinese[i + 1]
+    if (!next) continue // 末尾は一声のまま
+    if (next.tone === 4) {
+      Object.assign(chinese[i], changeItemTone(chinese[i], 2))
+    } else if (next.tone >= 1 && next.tone <= 3) {
+      Object.assign(chinese[i], changeItemTone(chinese[i], 4))
+    }
+  }
+
+  return result
+}
+
+// ── Main conversion ─────────────────────────────────────────────────────
+
+// Returns array of { char, bopomofo, tone, color, pinyin }
 // Non-Chinese chars get bopomofo: null
 export function convertToBopomofo(text) {
   if (!text) return []
   const chars = Array.from(text)
-  return chars.map(char => {
+  const items = chars.map(char => {
     if (!isChinese(char)) {
       return { char, bopomofo: null, tone: null, color: null }
     }
@@ -178,4 +248,5 @@ export function convertToBopomofo(text) {
     const result = pinyinToBopomofo(py.trim())
     return { char, pinyin: pyDisplay.trim(), ...result }
   })
+  return applyToneSandhi(items)
 }
